@@ -1,5 +1,5 @@
-resource "azurerm_role_management_policy" "role_management_policys" {
-  for_each = var.role_management_policys
+resource "azurerm_role_management_policy" "role_management_policies" {
+  for_each = var.role_management_policies
 
   role_definition_id = each.value.role_definition_id
   scope              = each.value.scope
@@ -10,9 +10,12 @@ resource "azurerm_role_management_policy" "role_management_policys" {
       dynamic "approval_stage" {
         for_each = activation_rules.value.approval_stage != null ? [activation_rules.value.approval_stage] : []
         content {
-          primary_approver {
-            object_id = approval_stage.value.primary_approver.object_id
-            type      = approval_stage.value.primary_approver.type
+          dynamic "primary_approver" {
+            for_each = approval_stage.value.primary_approver
+            content {
+              object_id = primary_approver.value.object_id
+              type      = primary_approver.value.type
+            }
           }
         }
       }

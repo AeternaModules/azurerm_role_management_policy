@@ -1,6 +1,6 @@
-variable "role_management_policys" {
+variable "role_management_policies" {
   description = <<EOT
-Map of role_management_policys, attributes below
+Map of role_management_policies, attributes below
 Required:
     - role_definition_id
     - scope
@@ -72,10 +72,10 @@ EOT
     scope              = string
     activation_rules = optional(object({
       approval_stage = optional(object({
-        primary_approver = object({
+        primary_approver = list(object({
           object_id = string
           type      = string
-        })
+        }))
       }))
       maximum_duration                                   = optional(string)
       require_approval                                   = optional(bool)
@@ -149,5 +149,13 @@ EOT
       }))
     }))
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.role_management_policies : (
+        length(v.activation_rules.approval_stage.primary_approver) >= 1
+      )
+    ])
+    error_message = "Each primary_approver list must contain at least 1 items"
+  }
 }
 
