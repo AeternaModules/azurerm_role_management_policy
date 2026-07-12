@@ -1,3 +1,7 @@
+output "role_management_policies_id" {
+  description = "Map of id values across all role_management_policies, keyed the same as var.role_management_policies"
+  value       = { for k, v in azurerm_role_management_policy.role_management_policies : k => v.id }
+}
 output "role_management_policies_activation_rules" {
   description = "Map of activation_rules values across all role_management_policies, keyed the same as var.role_management_policies"
   value       = { for k, v in azurerm_role_management_policy.role_management_policies : k => v.activation_rules }
