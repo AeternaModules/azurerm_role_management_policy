@@ -152,7 +152,7 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.role_management_policies : (
-        length(v.activation_rules.approval_stage.primary_approver) >= 1
+        v.activation_rules == null || (v.activation_rules.approval_stage == null || (length(v.activation_rules.approval_stage.primary_approver) >= 1))
       )
     ])
     error_message = "Each primary_approver list must contain at least 1 items"
